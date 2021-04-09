@@ -1,1 +1,48 @@
+<fieldset>
+<legend>Title</legend> 
+<%= @post.title %>
+</fieldset><br>
+<fieldset>
+<legend>Content</legend>
+<%= @post.content %><br><br>
+</fieldset><br>
+<fieldset>
+<legend>Categories</legend>
+<% @post.categories.each do |cat| %>
+    <li><%= cat.name%></li>
+<% end %>
+</fieldset><br>
+<fieldset>
+<legend>Comments </legend>
+<% @post.comments.each do |post| %>
+<li><%= post.user.username %> says: <%= post.content %></li><br>
+<% end %>
 
+
+<legend>Users</legend>
+<% @post.users.uniq.each do |user| %>
+  <%= link_to user.username, user_path(user)%><br>
+  <% end %>
+<%= form_for Comment.new do |f| %>
+  <%= f.label :comment %>
+
+  <%= f.hidden_field :post_id, value: @post.id %>
+  <p>
+  <p>
+    <%= f.label :content, "New Comment" %><br>
+    <%= f.text_area :content %>
+  </p>
+  <br/>
+    
+<h4> Select a User:</h4>
+<%= f.collection_select :user_id, User.all, :id, :username, include_blank: true%>
+  </p>
+<h4> Create a New User </h4>
+  <%= f.fields_for :user, User.new do |user_fields| %>
+    <%= user_fields.label :username %>
+    <%= user_fields.text_field :username %>
+  <% end %>
+  
+  
+  <%= f.submit %>
+<% end %>
